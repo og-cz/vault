@@ -1,4 +1,16 @@
-export function Footer() {
+import type { Page } from '../App';
+
+interface FooterProps {
+  currentPage: Page;
+  onNavigate: (page: Page) => void;
+}
+
+export function Footer({ currentPage, onNavigate }: FooterProps) {
+  const getLinkClass = (page: Page) => {
+    const isActive = currentPage === page;
+    return `${isActive ? 'text-red-600 font-medium' : 'text-gray-400'} hover:text-white transition-colors uppercase`;
+  };
+
   return (
     <footer className="bg-black border-t border-red-900/50 py-16 mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -15,9 +27,30 @@ export function Footer() {
           <div>
             <h3 className="text-white mb-6 uppercase tracking-widest text-sm">Quick Links</h3>
             <ul className="space-y-3 text-sm tracking-wide">
-              <li><button className="text-red-600 font-medium uppercase">Home</button></li>
-              <li><button className="text-gray-400 hover:text-white transition-colors uppercase">About Us</button></li>
-              <li><button className="text-gray-400 hover:text-white transition-colors uppercase">Upload</button></li>
+              <li>
+                <button 
+                  onClick={() => onNavigate('home')}
+                  className={getLinkClass('home')}
+                >
+                  Home
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => onNavigate('about')}
+                  className={getLinkClass('about')}
+                >
+                  About Us
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => onNavigate('upload')}
+                  className={getLinkClass('upload')}
+                >
+                  Upload
+                </button>
+              </li>
             </ul>
           </div>
 

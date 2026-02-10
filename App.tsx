@@ -27,7 +27,7 @@ export default function App() {
     <div className="min-h-screen bg-black">
       <Header currentPage={currentPage} onNavigate={setCurrentPage} />
       {renderPage()}
-      <Footer />
+      <Footer currentPage={currentPage} onNavigate={setCurrentPage} />
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import type { Gadget } from '../App';
-import { ImageWithFallback } from './figma_assets/ImageWithFallback';
+import { ImageWithFallback } from './figma/ImageWithFallback';
 import { Star, ShoppingCart } from 'lucide-react';
 
 interface GadgetCardProps {
