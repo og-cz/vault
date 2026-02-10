@@ -1,6 +1,5 @@
 import { useState, useRef } from 'react';
 import { Upload, CheckCircle2, XCircle, AlertCircle, Shield, FileImage, X, Download, FileJson, FileText, Scan, Activity, FileDigit, Microscope, Cpu, Layers } from 'lucide-react';
-import { uploadImageForAnalysis, type AnalysisResponse } from '../../services/api';
 
 interface AnalysisResult {
   overall: 'authentic' | 'fabricated' | 'suspicious';
@@ -24,73 +23,11 @@ interface AnalysisResult {
   };
 }
 
-/**
- * Transform the Django API response to the AnalysisResult format used by the UI
- */
-function transformApiResponse(apiResponse: AnalysisResponse, preview: string | null): AnalysisResult {
-  // Map detector results from the API
-  // For now, we'll create a structured response from the API data
-  const detectors = [
-    {
-      name: 'CNN Pattern Recognition',
-      icon: Cpu,
-      result: apiResponse.summary.label === 'fabricated' ? 'detected' : apiResponse.summary.label === 'suspicious' ? 'suspicious' : 'clean' as any,
-      confidence: Math.round(apiResponse.summary.overall_confidence),
-      details: apiResponse.summary.label === 'fabricated' ? 'Synthetic generation artifacts detected by CNN model' : apiResponse.summary.label === 'suspicious' ? 'Minor irregularities in noise distribution' : 'Natural noise patterns consistent with optical sensors'
-    },
-    {
-      name: 'ELA (Error Level Analysis)',
-      icon: Layers,
-      result: apiResponse.summary.label === 'suspicious' ? 'suspicious' : 'clean' as any,
-      confidence: Math.round(apiResponse.summary.overall_confidence * 0.9),
-      details: apiResponse.summary.label === 'suspicious' ? 'Inconsistent JPEG compression blocks found (Zou et al. 2025)' : 'Uniform compression levels detected across document'
-    },
-    {
-      name: 'Metadata Forensics',
-      icon: FileDigit,
-      result: apiResponse.summary.label === 'fabricated' ? 'detected' : 'clean' as any,
-      confidence: Math.round(apiResponse.summary.overall_confidence),
-      details: apiResponse.summary.label === 'fabricated' ? 'Missing camera/lens signature (Xu & Zhao 2020)' : 'EXIF data consistent with device signature'
-    },
-    {
-      name: 'Typography & Layout',
-      icon: Scan,
-      result: apiResponse.summary.label === 'fabricated' ? 'detected' : apiResponse.summary.label === 'suspicious' ? 'suspicious' : 'clean' as any,
-      confidence: Math.round(apiResponse.summary.overall_confidence * 0.95),
-      details: apiResponse.summary.label === 'fabricated' ? 'Font aliasing inconsistencies detected' : apiResponse.summary.label === 'suspicious' ? 'Unusual spacing/kerning for standard receipt' : 'Text geometry aligns with standard printing'
-    },
-    {
-      name: 'Visual Artifact Scan',
-      icon: Microscope,
-      result: apiResponse.summary.label === 'suspicious' ? 'suspicious' : 'clean' as any,
-      confidence: Math.round(apiResponse.summary.overall_confidence),
-      details: apiResponse.summary.label === 'suspicious' ? 'High-frequency noise anomalies found' : 'No diffusion model fingerprints detected'
-    },
-  ];
-
-  return {
-    overall: apiResponse.summary.label,
-    confidence: Math.round(apiResponse.summary.overall_confidence),
-    detectors,
-    metadata: {
-      fileName: apiResponse.file.name,
-      fileSize: `${(apiResponse.file.size_bytes / 1024).toFixed(2)} KB`,
-      dimensions: '1024 x 768', // This would come from image processing if available
-      format: apiResponse.file.content_type.split('/')[1].toUpperCase(),
-      uploadDate: new Date(apiResponse.file.uploaded_at).toISOString().split('T')[0],
-      md5Hash: apiResponse.file.md5.substring(0, 12) + '...',
-      colorSpace: 'sRGB',
-      bitDepth: '8-bit'
-    }
-  };
-}
-
 export function UploadPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [analyzing, setAnalyzing] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
-  const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -98,7 +35,6 @@ export function UploadPage() {
     if (file && file.type.startsWith('image/')) {
       setSelectedFile(file);
       setResult(null);
-      setError(null);
       
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -114,7 +50,6 @@ export function UploadPage() {
     if (file && file.type.startsWith('image/')) {
       setSelectedFile(file);
       setResult(null);
-      setError(null);
       
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -128,30 +63,119 @@ export function UploadPage() {
     event.preventDefault();
   };
 
+  const generateMockAnalysis = (file: File): AnalysisResult => {
+    // Logic tailored for Receipt/Document Verification based on literature (ELA, CNN, Metadata)
+    const detectionProbability = Math.random();
+    const overall: 'authentic' | 'fabricated' | 'suspicious' = 
+      detectionProbability < 0.6 ? 'authentic' : 
+      detectionProbability < 0.8 ? 'suspicious' : 'fabricated';
+    
+    const detectors = [
+      {
+        name: 'CNN Pattern Recognition',
+        icon: Cpu,
+        result: detectionProbability > 0.75 ? 'detected' : detectionProbability > 0.5 ? 'suspicious' : 'clean',
+        confidence: Math.floor(70 + Math.random() * 30),
+        details: detectionProbability > 0.75 ? 'Synthetic generation artifacts detected by CNN model' : detectionProbability > 0.5 ? 'Minor irregularities in noise distribution' : 'Natural noise patterns consistent with optical sensors'
+      },
+      {
+        name: 'ELA (Error Level Analysis)',
+        icon: Layers,
+        result: detectionProbability > 0.7 ? 'suspicious' : 'clean',
+        confidence: Math.floor(65 + Math.random() * 35),
+        details: detectionProbability > 0.7 ? 'Inconsistent JPEG compression blocks found (Zou et al. 2025)' : 'Uniform compression levels detected across document'
+      },
+      {
+        name: 'Metadata Forensics',
+        icon: FileDigit,
+        result: detectionProbability > 0.8 ? 'detected' : 'clean',
+        confidence: Math.floor(75 + Math.random() * 25),
+        details: detectionProbability > 0.8 ? 'Missing camera/lens signature (Xu & Zhao 2020)' : 'EXIF data consistent with device signature'
+      },
+      {
+        name: 'Typography & Layout',
+        icon: Scan,
+        result: detectionProbability > 0.85 ? 'detected' : detectionProbability > 0.6 ? 'suspicious' : 'clean',
+        confidence: Math.floor(60 + Math.random() * 40),
+        details: detectionProbability > 0.85 ? 'Font aliasing inconsistencies detected' : detectionProbability > 0.6 ? 'Unusual spacing/kerning for standard receipt' : 'Text geometry aligns with standard printing'
+      },
+      {
+        name: 'Visual Artifact Scan',
+        icon: Microscope,
+        result: detectionProbability > 0.65 ? 'suspicious' : 'clean',
+        confidence: Math.floor(70 + Math.random() * 30),
+        details: detectionProbability > 0.65 ? 'High-frequency noise anomalies found' : 'No diffusion model fingerprints detected'
+      },
+    ];
+
+    // Get image dimensions from the preview
+    const img = new Image();
+    img.src = preview!;
+    
+    return {
+      overall,
+      confidence: Math.floor(65 + Math.random() * 35),
+      detectors: detectors as any,
+      metadata: {
+        fileName: file.name,
+        fileSize: `${(file.size / 1024).toFixed(2)} KB`,
+        dimensions: `${img.naturalWidth} x ${img.naturalHeight}`,
+        format: file.type.split('/')[1].toUpperCase(),
+        uploadDate: new Date().toISOString().split('T')[0],
+        md5Hash: '7f9a2b8c...', // Placeholder
+        colorSpace: 'sRGB', 
+        bitDepth: '8-bit' 
+      }
+    };
+  };
+
+  // DJANGO INTEGRATION NOTE:
+  // This is where you would connect to your Django backend.
+  // Instead of calling generateMockAnalysis, you would create a FormData object
+  // and send it to your API endpoint.
+  //
+  // Your Django view should accept the image, run the CNN model + ELA + Metadata extraction,
+  // and return a JSON response matching the structure above.
+  /*
+  const uploadImageToDjango = async (file: File) => {
+    const formData = new FormData();
+    formData.append('image', file);
+    
+    try {
+      // Replace with your actual Django endpoint
+      const response = await fetch('http://localhost:8000/api/analyze-receipt/', {
+        method: 'POST',
+        body: formData,
+      });
+      
+      if (!response.ok) throw new Error('Analysis failed');
+      
+      const data = await response.json();
+      return data; // Ensure this matches AnalysisResult interface
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      throw error;
+    }
+  };
+  */
+
   const handleAnalyze = async () => {
     if (!selectedFile) return;
 
     setAnalyzing(true);
-    setError(null);
     
-    try {
-      const apiResponse = await uploadImageForAnalysis(selectedFile);
-      const transformedResult = transformApiResponse(apiResponse, preview);
-      setResult(transformedResult);
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'An error occurred during analysis';
-      setError(errorMessage);
-      console.error('Analysis error:', err);
-    } finally {
-      setAnalyzing(false);
-    }
+    // Simulate analysis time - In a real app, await the uploadImageToDjango(selectedFile) here
+    await new Promise(resolve => setTimeout(resolve, 2500));
+    
+    const mockResult = generateMockAnalysis(selectedFile);
+    setResult(mockResult);
+    setAnalyzing(false);
   };
 
   const handleClear = () => {
     setSelectedFile(null);
     setPreview(null);
     setResult(null);
-    setError(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -329,19 +353,9 @@ export function UploadPage() {
 
               {!result && !analyzing && (
                 <div className="flex-1 flex flex-col items-center justify-center text-gray-600 opacity-50">
-                  {error ? (
-                    <>
-                      <XCircle className="w-16 h-16 mb-4 stroke-1 text-red-600" />
-                      <p className="uppercase tracking-widest text-xs text-red-600">{error}</p>
-                      <p className="text-[10px] mt-2">Please try again with a different image</p>
-                    </>
-                  ) : (
-                    <>
-                      <Shield className="w-16 h-16 mb-4 stroke-1" />
-                      <p className="uppercase tracking-widest text-xs">System Idle</p>
-                      <p className="text-[10px] mt-2">Waiting for receipt image</p>
-                    </>
-                  )}
+                  <Shield className="w-16 h-16 mb-4 stroke-1" />
+                  <p className="uppercase tracking-widest text-xs">System Idle</p>
+                  <p className="text-[10px] mt-2">Waiting for receipt image</p>
                 </div>
               )}
 
