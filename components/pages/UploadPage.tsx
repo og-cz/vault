@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { Upload, CheckCircle2, XCircle, AlertCircle, Shield, FileImage, X, Download, FileJson, FileText, Scan, Activity, FileDigit, Microscope, Cpu, Layers } from 'lucide-react';
+import { useTheme } from '../ThemeContext';
 
 interface AnalysisResult {
   overall: 'authentic' | 'fabricated' | 'suspicious';
@@ -29,6 +30,25 @@ export function UploadPage() {
   const [analyzing, setAnalyzing] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { isPublic } = useTheme();
+
+  // Theme configuration
+  const themeColors = {
+    bg: isPublic ? 'bg-slate-50' : 'bg-black',
+    textPrimary: isPublic ? 'text-slate-900' : 'text-white',
+    textSecondary: isPublic ? 'text-slate-500' : 'text-gray-500',
+    accent: isPublic ? 'text-blue-600' : 'text-red-600',
+    accentBorder: isPublic ? 'border-blue-200' : 'border-red-600/50',
+    accentBorderStrong: isPublic ? 'border-blue-600' : 'border-red-600',
+    accentBg: isPublic ? 'bg-blue-600' : 'bg-red-600',
+    cardBg: isPublic ? 'bg-white' : 'bg-zinc-900/30',
+    cardBorder: isPublic ? 'border-slate-200' : 'border-zinc-800',
+    dropZoneHover: isPublic ? 'hover:bg-blue-50' : 'hover:bg-zinc-900/50',
+    scanLine: isPublic ? 'bg-blue-600 shadow-[0_0_15px_rgba(37,99,235,0.5)]' : 'bg-red-600 shadow-[0_0_15px_rgba(220,38,38,0.5)]',
+    buttonBg: isPublic ? 'bg-blue-600 hover:bg-blue-700' : 'bg-red-600 hover:bg-red-700',
+    resultCardBg: isPublic ? 'bg-slate-50 border-slate-200' : 'bg-black/20 border-zinc-800/50',
+    resultCardHover: isPublic ? 'hover:bg-slate-100' : 'hover:bg-zinc-800/50',
+  };
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -129,36 +149,6 @@ export function UploadPage() {
     };
   };
 
-  // DJANGO INTEGRATION NOTE:
-  // This is where you would connect to your Django backend.
-  // Instead of calling generateMockAnalysis, you would create a FormData object
-  // and send it to your API endpoint.
-  //
-  // Your Django view should accept the image, run the CNN model + ELA + Metadata extraction,
-  // and return a JSON response matching the structure above.
-  /*
-  const uploadImageToDjango = async (file: File) => {
-    const formData = new FormData();
-    formData.append('image', file);
-    
-    try {
-      // Replace with your actual Django endpoint
-      const response = await fetch('http://localhost:8000/api/analyze-receipt/', {
-        method: 'POST',
-        body: formData,
-      });
-      
-      if (!response.ok) throw new Error('Analysis failed');
-      
-      const data = await response.json();
-      return data; // Ensure this matches AnalysisResult interface
-    } catch (error) {
-      console.error('Error uploading image:', error);
-      throw error;
-    }
-  };
-  */
-
   const handleAnalyze = async () => {
     if (!selectedFile) return;
 
@@ -187,15 +177,6 @@ export function UploadPage() {
       case 'suspicious': return 'text-yellow-500';
       case 'fabricated': return 'text-red-600';
       default: return 'text-gray-500';
-    }
-  };
-
-  const getResultIcon = (result: string) => {
-    switch (result) {
-      case 'clean': return <CheckCircle2 className="w-4 h-4 text-green-500" />;
-      case 'suspicious': return <AlertCircle className="w-4 h-4 text-yellow-500" />;
-      case 'detected': return <XCircle className="w-4 h-4 text-red-600" />;
-      default: return null;
     }
   };
 
@@ -230,10 +211,10 @@ export function UploadPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black py-16 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div className={`${themeColors.bg} min-h-screen py-16 px-4 sm:px-6 lg:px-8 relative overflow-hidden transition-colors duration-500`}>
        {/* Background Grid Pattern */}
        <div className="absolute inset-0 opacity-10 pointer-events-none" style={{
-        backgroundImage: `linear-gradient(rgba(220, 38, 38, 0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(220, 38, 38, 0.2) 1px, transparent 1px)`,
+        backgroundImage: `linear-gradient(${isPublic ? 'rgba(37,99,235,0.2)' : 'rgba(220, 38, 38, 0.2)'} 1px, transparent 1px), linear-gradient(90deg, ${isPublic ? 'rgba(37,99,235,0.2)' : 'rgba(220, 38, 38, 0.2)'} 1px, transparent 1px)`,
         backgroundSize: '40px 40px'
       }}></div>
 
@@ -241,10 +222,10 @@ export function UploadPage() {
         {/* Header */}
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-3 mb-4">
-            <Shield className="w-12 h-12 text-red-600" />
-            <h1 className="text-4xl text-white tracking-widest font-light uppercase">Document Verification</h1>
+            <Shield className={`w-12 h-12 ${themeColors.accent}`} />
+            <h1 className={`text-4xl ${themeColors.textPrimary} tracking-widest font-light uppercase`}>Document Verification</h1>
           </div>
-          <p className="text-gray-500 max-w-2xl mx-auto tracking-wide text-sm">
+          <p className={`${themeColors.textSecondary} max-w-2xl mx-auto tracking-wide text-sm`}>
             Upload receipt or invoice for forensic analysis (CNN + ELA + Metadata).
           </p>
         </div>
@@ -254,24 +235,24 @@ export function UploadPage() {
           <div
             onDrop={handleDrop}
             onDragOver={handleDragOver}
-            className="group relative border border-zinc-800 bg-zinc-900/30 rounded-none p-16 text-center transition-all duration-300 hover:bg-zinc-900/50 cursor-pointer overflow-hidden"
+            className={`group relative border ${themeColors.cardBorder} ${themeColors.cardBg} rounded-none p-16 text-center transition-all duration-300 ${themeColors.dropZoneHover} cursor-pointer overflow-hidden`}
             onClick={() => fileInputRef.current?.click()}
           >
             {/* Corner Accents */}
-            <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-red-600/50 group-hover:border-red-600 transition-colors"></div>
-            <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-red-600/50 group-hover:border-red-600 transition-colors"></div>
-            <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-red-600/50 group-hover:border-red-600 transition-colors"></div>
-            <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-red-600/50 group-hover:border-red-600 transition-colors"></div>
+            <div className={`absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 ${themeColors.accentBorder} group-hover:${themeColors.accentBorderStrong} transition-colors`}></div>
+            <div className={`absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 ${themeColors.accentBorder} group-hover:${themeColors.accentBorderStrong} transition-colors`}></div>
+            <div className={`absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 ${themeColors.accentBorder} group-hover:${themeColors.accentBorderStrong} transition-colors`}></div>
+            <div className={`absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 ${themeColors.accentBorder} group-hover:${themeColors.accentBorderStrong} transition-colors`}></div>
             
             {/* Animated Scanner Bar (Ghost) */}
-            <div className="absolute inset-x-0 top-0 h-1 bg-red-600/20 shadow-[0_0_15px_rgba(220,38,38,0.5)] transform translate-y-[-100%] group-hover:animate-[scan_2s_linear_infinite]"></div>
+            <div className={`absolute inset-x-0 top-0 h-1 ${themeColors.scanLine} transform translate-y-[-100%] group-hover:animate-[scan_2s_linear_infinite]`}></div>
 
-            <Scan className="w-20 h-20 text-red-900/50 group-hover:text-red-600 mx-auto mb-6 transition-colors duration-500" />
+            <Scan className={`w-20 h-20 ${isPublic ? 'text-blue-900/20 group-hover:text-blue-600' : 'text-red-900/50 group-hover:text-red-600'} mx-auto mb-6 transition-colors duration-500`} />
             
-            <h3 className="text-2xl text-white mb-2 uppercase tracking-widest font-light">Initiate Scan</h3>
-            <p className="text-gray-500 mb-6 uppercase text-xs tracking-wider">Drop receipt image or click to browse</p>
+            <h3 className={`text-2xl ${themeColors.textPrimary} mb-2 uppercase tracking-widest font-light`}>Initiate Scan</h3>
+            <p className={`${themeColors.textSecondary} mb-6 uppercase text-xs tracking-wider`}>Drop receipt image or click to browse</p>
             
-            <div className="inline-flex items-center gap-4 text-[10px] text-zinc-600 uppercase tracking-widest">
+            <div className={`inline-flex items-center gap-4 text-[10px] ${isPublic ? 'text-slate-400' : 'text-zinc-600'} uppercase tracking-widest`}>
                 <span>JPG</span>
                 <span>PNG</span>
                 <span>WEBP</span>
@@ -288,31 +269,31 @@ export function UploadPage() {
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Image Preview */}
-            <div className="bg-zinc-900/30 border border-zinc-800 p-6 relative">
+            <div className={`${themeColors.cardBg} border ${themeColors.cardBorder} p-6 relative`}>
               {/* Corner Accents */}
-              <div className="absolute top-0 left-0 w-4 h-4 border-t border-l border-red-600/30"></div>
-              <div className="absolute top-0 right-0 w-4 h-4 border-t border-r border-red-600/30"></div>
-              <div className="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-red-600/30"></div>
-              <div className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-red-600/30"></div>
+              <div className={`absolute top-0 left-0 w-4 h-4 border-t border-l ${isPublic ? 'border-blue-600/30' : 'border-red-600/30'}`}></div>
+              <div className={`absolute top-0 right-0 w-4 h-4 border-t border-r ${isPublic ? 'border-blue-600/30' : 'border-red-600/30'}`}></div>
+              <div className={`absolute bottom-0 left-0 w-4 h-4 border-b border-l ${isPublic ? 'border-blue-600/30' : 'border-red-600/30'}`}></div>
+              <div className={`absolute bottom-0 right-0 w-4 h-4 border-b border-r ${isPublic ? 'border-blue-600/30' : 'border-red-600/30'}`}></div>
 
-              <div className="flex items-center justify-between mb-6 border-b border-zinc-800 pb-4">
-                <h3 className="text-sm text-white flex items-center gap-2 uppercase tracking-widest">
-                  <FileImage className="w-4 h-4 text-red-600" />
+              <div className={`flex items-center justify-between mb-6 border-b ${themeColors.cardBorder} pb-4`}>
+                <h3 className={`text-sm ${themeColors.textPrimary} flex items-center gap-2 uppercase tracking-widest`}>
+                  <FileImage className={`w-4 h-4 ${themeColors.accent}`} />
                   Source Document
                 </h3>
                 <button
                   onClick={handleClear}
-                  className="p-1 hover:text-red-600 transition-colors text-gray-500"
+                  className={`p-1 hover:${themeColors.accent} transition-colors ${themeColors.textSecondary}`}
                   aria-label="Clear"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
               
-              <div className="relative overflow-hidden border border-zinc-800 bg-black mb-6 group">
+              <div className={`relative overflow-hidden border ${themeColors.cardBorder} bg-black mb-6 group`}>
                 {/* Grid Overlay for "Scanning" look */}
                 <div className="absolute inset-0 pointer-events-none opacity-20" 
-                     style={{backgroundImage: 'linear-gradient(#ef4444 1px, transparent 1px), linear-gradient(90deg, #ef4444 1px, transparent 1px)', backgroundSize: '40px 40px'}}>
+                     style={{backgroundImage: `linear-gradient(${isPublic ? '#2563eb' : '#ef4444'} 1px, transparent 1px), linear-gradient(90deg, ${isPublic ? '#2563eb' : '#ef4444'} 1px, transparent 1px)`, backgroundSize: '40px 40px'}}>
                 </div>
                 
                 <img
@@ -322,9 +303,9 @@ export function UploadPage() {
                 />
                 
                 {analyzing && (
-                    <div className="absolute inset-0 bg-red-900/10 z-10">
-                        <div className="absolute inset-x-0 h-1 bg-red-600 shadow-[0_0_20px_rgba(220,38,38,1)] animate-[scan_1.5s_linear_infinite]"></div>
-                        <div className="absolute top-2 right-2 font-mono text-xs text-red-600 animate-pulse">ANALYZING TEXTURE...</div>
+                    <div className={`absolute inset-0 ${isPublic ? 'bg-blue-900/10' : 'bg-red-900/10'} z-10`}>
+                        <div className={`absolute inset-x-0 h-1 ${isPublic ? 'bg-blue-600 shadow-[0_0_20px_rgba(37,99,235,1)]' : 'bg-red-600 shadow-[0_0_20px_rgba(220,38,38,1)]'} animate-[scan_1.5s_linear_infinite]`}></div>
+                        <div className={`absolute top-2 right-2 font-mono text-xs ${isPublic ? 'text-blue-600' : 'text-red-600'} animate-pulse`}>ANALYZING TEXTURE...</div>
                     </div>
                 )}
               </div>
@@ -332,7 +313,7 @@ export function UploadPage() {
               <button
                 onClick={handleAnalyze}
                 disabled={analyzing}
-                className="w-full bg-red-600 hover:bg-red-700 disabled:bg-zinc-800 disabled:text-gray-500 disabled:cursor-not-allowed text-white py-4 transition-colors uppercase tracking-widest text-sm font-medium flex items-center justify-center gap-2 relative overflow-hidden"
+                className={`w-full ${themeColors.buttonBg} disabled:bg-zinc-800 disabled:text-gray-500 disabled:cursor-not-allowed text-white py-4 transition-colors uppercase tracking-widest text-sm font-medium flex items-center justify-center gap-2 relative overflow-hidden`}
               >
                 {analyzing ? (
                     <>
@@ -344,15 +325,15 @@ export function UploadPage() {
             </div>
 
             {/* Analysis Results */}
-            <div className="bg-zinc-900/30 border border-zinc-800 p-6 relative flex flex-col min-h-[500px]">
+            <div className={`${themeColors.cardBg} border ${themeColors.cardBorder} p-6 relative flex flex-col min-h-[500px]`}>
                {/* Corner Accents */}
-              <div className="absolute top-0 left-0 w-4 h-4 border-t border-l border-red-600/30"></div>
-              <div className="absolute top-0 right-0 w-4 h-4 border-t border-r border-red-600/30"></div>
-              <div className="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-red-600/30"></div>
-              <div className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-red-600/30"></div>
+              <div className={`absolute top-0 left-0 w-4 h-4 border-t border-l ${isPublic ? 'border-blue-600/30' : 'border-red-600/30'}`}></div>
+              <div className={`absolute top-0 right-0 w-4 h-4 border-t border-r ${isPublic ? 'border-blue-600/30' : 'border-red-600/30'}`}></div>
+              <div className={`absolute bottom-0 left-0 w-4 h-4 border-b border-l ${isPublic ? 'border-blue-600/30' : 'border-red-600/30'}`}></div>
+              <div className={`absolute bottom-0 right-0 w-4 h-4 border-b border-r ${isPublic ? 'border-blue-600/30' : 'border-red-600/30'}`}></div>
 
               {!result && !analyzing && (
-                <div className="flex-1 flex flex-col items-center justify-center text-gray-600 opacity-50">
+                <div className={`flex-1 flex flex-col items-center justify-center ${themeColors.textSecondary} opacity-50`}>
                   <Shield className="w-16 h-16 mb-4 stroke-1" />
                   <p className="uppercase tracking-widest text-xs">System Idle</p>
                   <p className="text-[10px] mt-2">Waiting for receipt image</p>
@@ -361,15 +342,15 @@ export function UploadPage() {
 
               {analyzing && (
                 <div className="flex-1 flex flex-col items-center justify-center">
-                  <div className="w-16 h-16 border-4 border-red-900 border-t-red-600 rounded-full animate-spin mb-6"></div>
-                  <p className="text-white uppercase tracking-widest text-sm animate-pulse">Processing Data</p>
-                  <div className="w-48 h-1 bg-zinc-800 mt-6 overflow-hidden">
-                      <div className="h-full bg-red-600 animate-[loading_2s_ease-in-out_infinite]"></div>
+                  <div className={`w-16 h-16 border-4 ${isPublic ? 'border-blue-900 border-t-blue-600' : 'border-red-900 border-t-red-600'} rounded-full animate-spin mb-6`}></div>
+                  <p className={`${themeColors.textPrimary} uppercase tracking-widest text-sm animate-pulse`}>Processing Data</p>
+                  <div className={`w-48 h-1 ${isPublic ? 'bg-slate-200' : 'bg-zinc-800'} mt-6 overflow-hidden`}>
+                      <div className={`h-full ${isPublic ? 'bg-blue-600' : 'bg-red-600'} animate-[loading_2s_ease-in-out_infinite]`}></div>
                   </div>
                   <div className="mt-4 space-y-1 text-center">
-                      <p className="text-[10px] text-red-600 font-mono">Comparing against standard layouts...</p>
-                      <p className="text-[10px] text-red-600 font-mono">Analyzing compression artifacts...</p>
-                      <p className="text-[10px] text-red-600 font-mono">Verifying EXIF data...</p>
+                      <p className={`text-[10px] ${isPublic ? 'text-blue-600' : 'text-red-600'} font-mono`}>Comparing against standard layouts...</p>
+                      <p className={`text-[10px] ${isPublic ? 'text-blue-600' : 'text-red-600'} font-mono`}>Analyzing compression artifacts...</p>
+                      <p className={`text-[10px] ${isPublic ? 'text-blue-600' : 'text-red-600'} font-mono`}>Verifying EXIF data...</p>
                   </div>
                 </div>
               )}
@@ -377,48 +358,48 @@ export function UploadPage() {
               {result && !analyzing && (
                 <div className="space-y-6 animate-in fade-in duration-500">
                   {/* Overall Result Header */}
-                  <div className={`border-l-4 p-4 bg-black/50 ${
+                  <div className={`border-l-4 p-4 ${isPublic ? 'bg-slate-100' : 'bg-black/50'} ${
                       result.overall === 'authentic' ? 'border-green-500' :
                       result.overall === 'suspicious' ? 'border-yellow-500' : 'border-red-600'
                   }`}>
-                    <h3 className="text-[10px] text-gray-400 uppercase tracking-widest mb-1">Final Verdict</h3>
+                    <h3 className={`text-[10px] ${themeColors.textSecondary} uppercase tracking-widest mb-1`}>Final Verdict</h3>
                     <div className="flex items-center gap-3">
                       <span className={`text-3xl uppercase tracking-widest font-light ${getOverallColor(result.overall)}`}>
                         {result.overall}
                       </span>
                     </div>
                     <div className="flex items-center gap-2 mt-2">
-                        <span className="text-gray-500 text-xs uppercase">Confidence Level:</span>
-                        <div className="flex-1 h-1 bg-zinc-800">
+                        <span className={`${themeColors.textSecondary} text-xs uppercase`}>Confidence Level:</span>
+                        <div className={`flex-1 h-1 ${isPublic ? 'bg-slate-300' : 'bg-zinc-800'}`}>
                             <div 
                                 className={`h-full ${getOverallColor(result.overall).replace('text-', 'bg-')}`} 
                                 style={{width: `${result.confidence}%`}}
                             ></div>
                         </div>
-                        <span className="text-white text-xs font-mono">{result.confidence}%</span>
+                        <span className={`${themeColors.textPrimary} text-xs font-mono`}>{result.confidence}%</span>
                     </div>
                   </div>
 
                   {/* Metadata Grid */}
-                  <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs border-y border-zinc-800 py-4">
-                      <div className="text-gray-500 uppercase tracking-wider">Size</div>
-                      <div className="text-white text-right font-mono">{result.metadata.fileSize}</div>
+                  <div className={`grid grid-cols-2 gap-x-4 gap-y-2 text-xs border-y ${themeColors.cardBorder} py-4`}>
+                      <div className={`${themeColors.textSecondary} uppercase tracking-wider`}>Size</div>
+                      <div className={`${themeColors.textPrimary} text-right font-mono`}>{result.metadata.fileSize}</div>
                       
-                      <div className="text-gray-500 uppercase tracking-wider">Type</div>
-                      <div className="text-white text-right font-mono">{result.metadata.format}</div>
+                      <div className={`${themeColors.textSecondary} uppercase tracking-wider`}>Type</div>
+                      <div className={`${themeColors.textPrimary} text-right font-mono`}>{result.metadata.format}</div>
                       
-                      <div className="text-gray-500 uppercase tracking-wider">Resolution</div>
-                      <div className="text-white text-right font-mono">{result.metadata.dimensions}</div>
+                      <div className={`${themeColors.textSecondary} uppercase tracking-wider`}>Resolution</div>
+                      <div className={`${themeColors.textPrimary} text-right font-mono`}>{result.metadata.dimensions}</div>
                   </div>
 
                   {/* Detector Results List */}
                   <div className="space-y-2 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
                     {result.detectors.map((detector, index) => (
-                      <div key={index} className="flex flex-col p-3 hover:bg-zinc-800/50 transition-colors border border-zinc-800/50 bg-black/20 mb-2 last:mb-0">
+                      <div key={index} className={`flex flex-col p-3 transition-colors border ${themeColors.resultCardBg} ${themeColors.resultCardHover} mb-2 last:mb-0`}>
                           <div className="flex items-center justify-between mb-1">
                             <div className="flex items-center gap-2">
-                                <detector.icon className="w-3 h-3 text-red-600" />
-                                <span className="text-gray-300 text-xs font-medium">{detector.name}</span>
+                                <detector.icon className={`w-3 h-3 ${isPublic ? 'text-blue-600' : 'text-red-600'}`} />
+                                <span className={`${themeColors.textPrimary} text-xs font-medium`}>{detector.name}</span>
                             </div>
                             <span className={`text-[10px] font-mono ${
                                 detector.result === 'clean' ? 'text-green-500' : 
@@ -427,7 +408,7 @@ export function UploadPage() {
                                 {detector.result.toUpperCase()}
                             </span>
                           </div>
-                          <p className="text-[10px] text-gray-500 ml-5">{detector.details}</p>
+                          <p className={`text-[10px] ${themeColors.textSecondary} ml-5`}>{detector.details}</p>
                       </div>
                     ))}
                   </div>
@@ -436,14 +417,14 @@ export function UploadPage() {
                   <div className="grid grid-cols-2 gap-3 pt-2">
                     <button
                       onClick={downloadJSON}
-                      className="flex items-center justify-center gap-2 bg-zinc-800 hover:bg-zinc-700 text-white py-3 text-xs uppercase tracking-wider transition-colors"
+                      className={`flex items-center justify-center gap-2 ${isPublic ? 'bg-slate-200 hover:bg-slate-300 text-slate-900' : 'bg-zinc-800 hover:bg-zinc-700 text-white'} py-3 text-xs uppercase tracking-wider transition-colors`}
                     >
                       <FileJson className="w-4 h-4" />
                       Export JSON
                     </button>
                     <button
                       onClick={downloadPDF}
-                      className="flex items-center justify-center gap-2 bg-zinc-800 hover:bg-zinc-700 text-white py-3 text-xs uppercase tracking-wider transition-colors"
+                      className={`flex items-center justify-center gap-2 ${isPublic ? 'bg-slate-200 hover:bg-slate-300 text-slate-900' : 'bg-zinc-800 hover:bg-zinc-700 text-white'} py-3 text-xs uppercase tracking-wider transition-colors`}
                     >
                       <FileText className="w-4 h-4" />
                       Report

@@ -1,8 +1,11 @@
 import { User, Fingerprint, Dna, Scan, Binary, ShieldAlert, FileKey, Shield, AlertTriangle, Key, Target, Globe2, HardDrive, CheckCircle } from 'lucide-react';
+import { useTheme } from '../ThemeContext';
 
 export function AboutPage() {
+  const { isPublic } = useTheme();
+
   const leader = {
-    name: 'Main Person 1',
+    name: 'OGCZ',
     role: 'Main Programmer 1',
     code: '001-A'
   };
@@ -30,31 +33,43 @@ export function AboutPage() {
     }
   ];
 
+  // Theme-based colors
+  const themeColors = {
+    bg: isPublic ? 'bg-slate-50' : 'bg-black',
+    textPrimary: isPublic ? 'text-slate-900' : 'text-white',
+    textSecondary: isPublic ? 'text-slate-500' : 'text-gray-400',
+    accent: isPublic ? 'text-blue-600' : 'text-red-600',
+    accentBorder: isPublic ? 'border-blue-200' : 'border-red-900/50',
+    accentBg: isPublic ? 'bg-blue-50' : 'bg-red-950/20',
+    cardBg: isPublic ? 'bg-white' : 'bg-zinc-900',
+    cardBorder: isPublic ? 'border-slate-200' : 'border-zinc-800',
+    gradientLine: isPublic ? 'from-transparent via-blue-300 to-transparent' : 'from-transparent via-red-900 to-transparent',
+    headerOverlay: isPublic ? 'from-blue-50/50 to-slate-50' : 'from-red-950/20 to-black',
+    boxShadow: isPublic ? 'shadow-lg shadow-blue-100/50' : '',
+    decorativeBorder: isPublic ? 'border-blue-600/50' : 'border-red-600/50',
+  };
+
   return (
-    <div className="bg-black min-h-screen pb-20 relative overflow-hidden">
+    <div className={`${themeColors.bg} min-h-screen pb-20 relative overflow-hidden transition-colors duration-500`}>
       {/* Background Matrix Effect */}
       <div className="absolute inset-0 pointer-events-none opacity-20">
-        <div className="absolute top-0 left-10 w-px h-full bg-gradient-to-b from-transparent via-red-900 to-transparent"></div>
-        <div className="absolute top-0 right-10 w-px h-full bg-gradient-to-b from-transparent via-red-900 to-transparent"></div>
-        <div className="absolute top-0 left-1/4 w-px h-full bg-gradient-to-b from-transparent via-red-900/50 to-transparent dashed"></div>
-        <div className="absolute top-0 right-1/4 w-px h-full bg-gradient-to-b from-transparent via-red-900/50 to-transparent dashed"></div>
+        <div className={`absolute top-0 left-10 w-px h-full bg-gradient-to-b ${themeColors.gradientLine}`}></div>
+        <div className={`absolute top-0 right-10 w-px h-full bg-gradient-to-b ${themeColors.gradientLine}`}></div>
+        <div className={`absolute top-0 left-1/4 w-px h-full bg-gradient-to-b ${themeColors.gradientLine} dashed`}></div>
+        <div className={`absolute top-0 right-1/4 w-px h-full bg-gradient-to-b ${themeColors.gradientLine} dashed`}></div>
       </div>
 
       {/* Header Section */}
       <section className="relative pt-12 pb-20">
-        <div className="absolute top-0 inset-x-0 h-96 bg-gradient-to-b from-red-950/20 to-black pointer-events-none"></div>
+        <div className={`absolute top-0 inset-x-0 h-96 bg-gradient-to-b ${themeColors.headerOverlay} pointer-events-none`}></div>
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-          <div className="inline-flex items-center gap-2 border border-red-900/50 px-4 py-1 rounded-full bg-red-950/30 mb-6 backdrop-blur-md">
-            <ShieldAlert className="w-4 h-4 text-red-500" />
-            <span className="text-red-500 uppercase tracking-widest text-xs font-bold">Clearance Level 5</span>
-          </div>
           
-          <h1 className="text-5xl md:text-7xl text-white mb-6 font-normal tracking-wide">
+          <h1 className={`text-5xl md:text-7xl mb-6 font-normal tracking-wide transition-colors ${themeColors.textPrimary}`}>
             Personnel Database
           </h1>
           
-          <p className="text-gray-400 max-w-2xl mx-auto text-sm tracking-wide">
+          <p className={`${themeColors.textSecondary} max-w-2xl mx-auto text-sm tracking-wide`}>
             Authorized personnel with active security credentials.
           </p>
         </div>
@@ -65,21 +80,23 @@ export function AboutPage() {
         {/* Top Level - Leader */}
         <div className="flex justify-center mb-12">
           <div className="w-full max-w-sm group relative">
-            <div className="absolute -inset-1 bg-gradient-to-r from-red-600 to-red-900 rounded-lg blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
-            <div className="relative bg-zinc-900 border border-zinc-800 p-8 flex flex-col items-center text-center overflow-hidden">
+            <div className={`absolute -inset-1 bg-gradient-to-r ${isPublic ? 'from-blue-600 to-blue-900' : 'from-red-600 to-red-900'} rounded-lg blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200`}></div>
+            
+            <div className={`relative ${themeColors.cardBg} border ${themeColors.cardBorder} p-8 flex flex-col items-center text-center overflow-hidden transition-colors ${themeColors.boxShadow}`}>
               {/* Decorative Corner */}
-              <div className="absolute top-0 left-0 w-16 h-16 border-t-2 border-l-2 border-red-600/50"></div>
-              <div className="absolute bottom-0 right-0 w-16 h-16 border-b-2 border-r-2 border-red-600/50"></div>
+              <div className={`absolute top-0 left-0 w-16 h-16 border-t-2 border-l-2 ${themeColors.decorativeBorder}`}></div>
+              <div className={`absolute bottom-0 right-0 w-16 h-16 border-b-2 border-r-2 ${themeColors.decorativeBorder}`}></div>
               
-              <div className="w-24 h-24 bg-black border-2 border-red-900/50 rounded-full flex items-center justify-center mb-6 group-hover:border-red-600 transition-colors">
-                <User className="w-10 h-10 text-gray-500 group-hover:text-red-600 transition-colors" />
+              <div className="relative mb-6">
+                <div className={`w-24 h-24 ${isPublic ? 'bg-slate-50' : 'bg-black'} border-2 ${themeColors.accentBorder} rounded-full flex items-center justify-center relative z-10 group-hover:${isPublic ? 'border-blue-600' : 'border-red-600'} transition-colors`}>
+                    <User className={`w-10 h-10 ${themeColors.textSecondary} group-hover:${themeColors.accent} transition-colors`} />
+                </div>
+                {/* Orbiting ring - SLOWER */}
+                <div className={`absolute inset-0 border ${isPublic ? 'border-blue-600/30' : 'border-red-600/30'} rounded-full scale-125 animate-[spin_20s_linear_infinite]`}></div>
               </div>
               
-              <h3 className="text-white text-xl uppercase tracking-widest mb-1">{leader.name}</h3>
-              <p className="text-red-600 text-xs uppercase tracking-wider mb-4">{leader.role}</p>
-              
-              <div className="w-full h-px bg-zinc-800 mb-4"></div>
-              <p className="text-zinc-600 font-mono text-xs tracking-widest">ID: {leader.code}</p>
+              <h3 className={`${themeColors.textPrimary} text-xl uppercase tracking-widest mb-1`}>{leader.name}</h3>
+              <p className={`${themeColors.accent} text-xs uppercase tracking-wider mb-4`}>{leader.role}</p>
             </div>
           </div>
         </div>
@@ -88,20 +105,16 @@ export function AboutPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
           {teamMembers.map((member, index) => (
             <div key={index} className="group relative">
-              <div className="relative bg-zinc-900/50 border border-zinc-800 p-6 flex flex-col items-center text-center overflow-hidden hover:bg-zinc-900 transition-colors">
+              <div className={`relative ${isPublic ? 'bg-white' : 'bg-zinc-900/50'} border ${themeColors.cardBorder} p-6 flex flex-col items-center text-center overflow-hidden hover:${isPublic ? 'bg-slate-50' : 'bg-zinc-900'} transition-colors ${themeColors.boxShadow}`}>
                 {/* Decorative Scan Line */}
-                <div className="absolute top-0 left-0 w-full h-[2px] bg-red-600/50 transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-linear"></div>
+                <div className={`absolute top-0 left-0 w-full h-[2px] ${isPublic ? 'bg-blue-600/50' : 'bg-red-600/50'} transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-linear`}></div>
                 
-                <div className="w-16 h-16 bg-black border border-zinc-700 rounded-full flex items-center justify-center mb-4 group-hover:border-red-600/50 transition-colors">
-                  <User className="w-6 h-6 text-gray-600 group-hover:text-red-600 transition-colors" />
+                <div className={`w-16 h-16 ${isPublic ? 'bg-slate-50' : 'bg-black'} border ${isPublic ? 'border-slate-200' : 'border-zinc-700'} rounded-full flex items-center justify-center mb-4 group-hover:${isPublic ? 'border-blue-600/50' : 'border-red-600/50'} transition-colors`}>
+                  <User className={`w-6 h-6 ${themeColors.textSecondary} group-hover:${themeColors.accent} transition-colors`} />
                 </div>
                 
-                <h3 className="text-white text-sm uppercase tracking-widest mb-1">{member.name}</h3>
-                <p className="text-red-600/80 text-[10px] uppercase tracking-wider mb-3">{member.role}</p>
-                
-                <div className="w-full bg-zinc-800/50 px-2 py-1 rounded">
-                   <p className="text-zinc-500 font-mono text-[10px] tracking-widest">ID: {member.code}</p>
-                </div>
+                <h3 className={`${themeColors.textPrimary} text-sm uppercase tracking-widest mb-1`}>{member.name}</h3>
+                <p className={`${isPublic ? 'text-blue-600/80' : 'text-red-600/80'} text-[10px] uppercase tracking-wider mb-3`}>{member.role}</p>
               </div>
             </div>
           ))}
@@ -109,37 +122,34 @@ export function AboutPage() {
       </section>
 
       {/* Security Protocols */}
-      <section className="bg-zinc-900/30 border-y border-zinc-800 py-20 mb-20 relative">
+      <section className={`${isPublic ? 'bg-slate-100 border-slate-200' : 'bg-zinc-900/30 border-zinc-800'} border-y py-20 mb-20 relative transition-colors`}>
          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-center gap-3 mb-12">
-                <Target className="w-6 h-6 text-red-600" />
-                <h2 className="text-2xl text-white uppercase tracking-widest font-light text-center">Operational Protocols</h2>
+                <Target className={`w-6 h-6 ${themeColors.accent}`} />
+                <h2 className={`text-2xl ${themeColors.textPrimary} uppercase tracking-widest font-light text-center`}>Operational Protocols</h2>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div className="bg-black border border-zinc-800 p-6 relative group hover:border-red-900/50 transition-colors">
-                    <div className="absolute top-0 left-0 w-1 h-full bg-red-600 scale-y-0 group-hover:scale-y-100 transition-transform"></div>
-                    <Shield className="w-8 h-8 text-red-600 mb-4" />
-                    <h3 className="text-white text-lg uppercase tracking-wider mb-2">Protocol: OMEGA</h3>
-                    <p className="text-gray-500 text-xs leading-relaxed">
+                <div className={`${isPublic ? 'bg-white' : 'bg-black'} border ${themeColors.cardBorder} p-6 relative group hover:${themeColors.accentBorder} transition-colors ${themeColors.boxShadow}`}>
+                    <div className={`absolute top-0 left-0 w-1 h-full ${isPublic ? 'bg-blue-600' : 'bg-red-600'} scale-y-0 group-hover:scale-y-100 transition-transform`}></div>
+                    <h3 className={`${themeColors.textPrimary} text-lg uppercase tracking-wider mb-2`}>Protocol: OMEGA</h3>
+                    <p className={`${themeColors.textSecondary} text-xs leading-relaxed`}>
                         Total information containment. Any unauthorized data leaks are detected and neutralized within 0.04 seconds.
                     </p>
                 </div>
                 
-                <div className="bg-black border border-zinc-800 p-6 relative group hover:border-red-900/50 transition-colors">
-                     <div className="absolute top-0 left-0 w-1 h-full bg-red-600 scale-y-0 group-hover:scale-y-100 transition-transform"></div>
-                    <AlertTriangle className="w-8 h-8 text-red-600 mb-4" />
-                    <h3 className="text-white text-lg uppercase tracking-wider mb-2">Protocol: SENTINEL</h3>
-                    <p className="text-gray-500 text-xs leading-relaxed">
+                <div className={`${isPublic ? 'bg-white' : 'bg-black'} border ${themeColors.cardBorder} p-6 relative group hover:${themeColors.accentBorder} transition-colors ${themeColors.boxShadow}`}>
+                     <div className={`absolute top-0 left-0 w-1 h-full ${isPublic ? 'bg-blue-600' : 'bg-red-600'} scale-y-0 group-hover:scale-y-100 transition-transform`}></div>
+                    <h3 className={`${themeColors.textPrimary} text-lg uppercase tracking-wider mb-2`}>Protocol: SENTINEL</h3>
+                    <p className={`${themeColors.textSecondary} text-xs leading-relaxed`}>
                         Automated threat response. Our systems proactively scan for manipulation signatures before content is public.
                     </p>
                 </div>
 
-                <div className="bg-black border border-zinc-800 p-6 relative group hover:border-red-900/50 transition-colors">
-                     <div className="absolute top-0 left-0 w-1 h-full bg-red-600 scale-y-0 group-hover:scale-y-100 transition-transform"></div>
-                    <Key className="w-8 h-8 text-red-600 mb-4" />
-                    <h3 className="text-white text-lg uppercase tracking-wider mb-2">Protocol: KEEPER</h3>
-                    <p className="text-gray-500 text-xs leading-relaxed">
+                <div className={`${isPublic ? 'bg-white' : 'bg-black'} border ${themeColors.cardBorder} p-6 relative group hover:${themeColors.accentBorder} transition-colors ${themeColors.boxShadow}`}>
+                     <div className={`absolute top-0 left-0 w-1 h-full ${isPublic ? 'bg-blue-600' : 'bg-red-600'} scale-y-0 group-hover:scale-y-100 transition-transform`}></div>
+                    <h3 className={`${themeColors.textPrimary} text-lg uppercase tracking-wider mb-2`}>Protocol: KEEPER</h3>
+                    <p className={`${themeColors.textSecondary} text-xs leading-relaxed`}>
                         Encryption standards exceeding military grade. User anonymity and data integrity are absolute.
                     </p>
                 </div>
@@ -148,97 +158,47 @@ export function AboutPage() {
       </section>
 
       {/* NEW CONTENT: Core Directives */}
-      <section className="py-20 bg-black relative z-10 mb-20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-                  <div>
-                      <h2 className="text-3xl text-white uppercase tracking-widest font-light mb-8 border-l-4 border-red-600 pl-6">
-                          Primary Directives
-                      </h2>
-                      <div className="space-y-6">
-                          <div className="flex items-start gap-4">
-                              <div className="mt-1 bg-zinc-900 p-2 border border-zinc-800">
-                                  <span className="text-red-600 font-mono font-bold">01</span>
-                              </div>
-                              <div>
-                                  <h4 className="text-white text-lg uppercase tracking-wider mb-2">Maintain Objective Reality</h4>
-                                  <p className="text-gray-500 text-sm leading-relaxed">
-                                      In an age of synthetic media, truth is our most valuable currency. We must preserve the boundary between the authentic and the fabricated at all costs.
-                                  </p>
-                              </div>
+      <section className={`py-20 ${isPublic ? 'bg-white' : 'bg-black'} relative z-10 mb-20 transition-colors`}>
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div>
+                  <h2 className={`text-3xl ${themeColors.textPrimary} uppercase tracking-widest font-light mb-8 border-l-4 ${isPublic ? 'border-blue-600' : 'border-red-600'} pl-6`}>
+                      Primary Directives
+                  </h2>
+                  <div className="space-y-6">
+                      <div className="flex items-start gap-4">
+                          <div className={`mt-1 ${isPublic ? 'bg-slate-100 border-slate-200' : 'bg-zinc-900 border-zinc-800'} p-2 border`}>
+                              <span className={`${themeColors.accent} font-mono font-bold`}>01</span>
                           </div>
-                          
-                          <div className="flex items-start gap-4">
-                              <div className="mt-1 bg-zinc-900 p-2 border border-zinc-800">
-                                  <span className="text-red-600 font-mono font-bold">02</span>
-                              </div>
-                              <div>
-                                  <h4 className="text-white text-lg uppercase tracking-wider mb-2">Absolute Surveillance</h4>
-                                  <p className="text-gray-500 text-sm leading-relaxed">
-                                      Total oversight of digital channels ensures that no manipulation goes undetected. Visibility is the precursor to security.
-                                  </p>
-                              </div>
+                          <div>
+                              <h4 className={`${themeColors.textPrimary} text-lg uppercase tracking-wider mb-2`}>Maintain Objective Reality</h4>
+                              <p className={`${themeColors.textSecondary} text-sm leading-relaxed`}>
+                                  In an age of synthetic media, truth is our most valuable currency. We must preserve the boundary between the authentic and the fabricated at all costs.
+                              </p>
                           </div>
+                      </div>
+                      
+                      <div className="flex items-start gap-4">
+                          <div className={`mt-1 ${isPublic ? 'bg-slate-100 border-slate-200' : 'bg-zinc-900 border-zinc-800'} p-2 border`}>
+                              <span className={`${themeColors.accent} font-mono font-bold`}>02</span>
+                          </div>
+                          <div>
+                              <h4 className={`${themeColors.textPrimary} text-lg uppercase tracking-wider mb-2`}>Absolute Surveillance</h4>
+                              <p className={`${themeColors.textSecondary} text-sm leading-relaxed`}>
+                                  Total oversight of digital channels ensures that no manipulation goes undetected. Visibility is the precursor to security.
+                              </p>
+                          </div>
+                      </div>
 
-                          <div className="flex items-start gap-4">
-                              <div className="mt-1 bg-zinc-900 p-2 border border-zinc-800">
-                                  <span className="text-red-600 font-mono font-bold">03</span>
-                              </div>
-                              <div>
-                                  <h4 className="text-white text-lg uppercase tracking-wider mb-2">Zero Compromise</h4>
-                                  <p className="text-gray-500 text-sm leading-relaxed">
-                                      Accuracy rates below 99.9% are unacceptable. Our neural networks are retrained daily to adapt to evolving generative threats.
-                                  </p>
-                              </div>
+                      <div className="flex items-start gap-4">
+                          <div className={`mt-1 ${isPublic ? 'bg-slate-100 border-slate-200' : 'bg-zinc-900 border-zinc-800'} p-2 border`}>
+                              <span className={`${themeColors.accent} font-mono font-bold`}>03</span>
                           </div>
-                      </div>
-                  </div>
-                  
-                  {/* Global Infrastructure Map Representation */}
-                  <div className="bg-zinc-900/10 border border-zinc-800 p-8 relative">
-                      <div className="flex items-center justify-between mb-8">
-                          <h3 className="text-white uppercase tracking-widest text-sm flex items-center gap-2">
-                              <Globe2 className="w-4 h-4 text-red-600" />
-                              Infrastructure Nodes
-                          </h3>
-                          <span className="text-[10px] text-green-500 bg-green-900/10 border border-green-900/30 px-2 py-1 rounded">ALL SYSTEMS NOMINAL</span>
-                      </div>
-                      
-                      <div className="space-y-4">
-                          <div className="flex items-center justify-between p-3 bg-black/50 border-l-2 border-red-600">
-                              <div className="flex items-center gap-3">
-                                  <HardDrive className="w-4 h-4 text-zinc-500" />
-                                  <span className="text-gray-300 text-xs uppercase tracking-wide">North America Server</span>
-                              </div>
-                              <span className="text-red-600 text-[10px] font-mono">LAT: 40.7128 N</span>
+                          <div>
+                              <h4 className={`${themeColors.textPrimary} text-lg uppercase tracking-wider mb-2`}>Zero Compromise</h4>
+                              <p className={`${themeColors.textSecondary} text-sm leading-relaxed`}>
+                                  Accuracy rates below 99.9% are unacceptable. Our neural networks are retrained daily to adapt to evolving generative threats.
+                              </p>
                           </div>
-                          <div className="flex items-center justify-between p-3 bg-black/50 border-l-2 border-red-600">
-                              <div className="flex items-center gap-3">
-                                  <HardDrive className="w-4 h-4 text-zinc-500" />
-                                  <span className="text-gray-300 text-xs uppercase tracking-wide">Europe Neural Hub</span>
-                              </div>
-                              <span className="text-red-600 text-[10px] font-mono">LAT: 52.5200 N</span>
-                          </div>
-                          <div className="flex items-center justify-between p-3 bg-black/50 border-l-2 border-red-600">
-                              <div className="flex items-center gap-3">
-                                  <HardDrive className="w-4 h-4 text-zinc-500" />
-                                  <span className="text-gray-300 text-xs uppercase tracking-wide">Asia Pacific Relay</span>
-                              </div>
-                              <span className="text-red-600 text-[10px] font-mono">LAT: 35.6762 N</span>
-                          </div>
-                          <div className="flex items-center justify-between p-3 bg-black/50 border-l-2 border-red-600">
-                              <div className="flex items-center gap-3">
-                                  <HardDrive className="w-4 h-4 text-zinc-500" />
-                                  <span className="text-gray-300 text-xs uppercase tracking-wide">Deep Storage Facility</span>
-                              </div>
-                              <span className="text-red-600 text-[10px] font-mono">CLASSIFIED</span>
-                          </div>
-                      </div>
-                      
-                      <div className="mt-8 pt-4 border-t border-zinc-800">
-                           <p className="text-[10px] text-zinc-600 font-mono text-center">
-                               TOTAL STORAGE CAPACITY: 840 ZETTABYTES
-                           </p>
                       </div>
                   </div>
               </div>
@@ -247,19 +207,22 @@ export function AboutPage() {
 
       {/* Corporate Info Section */}
       <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-left relative z-10 mb-20">
-        <div className="bg-zinc-900/20 border border-zinc-800 p-8 md:p-12 relative overflow-hidden">
+        <div className={`${isPublic ? 'bg-slate-50 border-slate-200' : 'bg-zinc-900/20 border-zinc-800'} border p-8 md:p-12 relative overflow-hidden transition-colors`}>
             {/* Background Pattern */}
-            <div className="absolute inset-0 opacity-5" style={{backgroundImage: 'radial-gradient(circle at 2px 2px, #dc2626 1px, transparent 0)', backgroundSize: '24px 24px'}}></div>
+            <div className="absolute inset-0 opacity-5" style={{
+                backgroundImage: `radial-gradient(circle at 2px 2px, ${isPublic ? '#2563eb' : '#dc2626'} 1px, transparent 0)`, 
+                backgroundSize: '24px 24px'
+            }}></div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 relative z-10">
                 <div>
-                    <div className="border-l-4 border-red-600 pl-6 mb-8">
-                        <h2 className="text-4xl text-white mb-2 font-light uppercase tracking-widest">
+                    <div className={`border-l-4 ${isPublic ? 'border-blue-600' : 'border-red-600'} pl-6 mb-8`}>
+                        <h2 className={`text-4xl ${themeColors.textPrimary} mb-2 font-light uppercase tracking-widest`}>
                         VAULT Corporation
                         </h2>
-                        <p className="text-red-600 text-sm tracking-[0.3em] uppercase">Classified Information</p>
+                        <p className={`${themeColors.accent} text-sm tracking-[0.3em] uppercase`}>Classified Information</p>
                     </div>
-                    <div className="prose prose-invert max-w-none text-gray-400 font-light leading-relaxed text-sm text-justify">
+                    <div className={`prose max-w-none ${themeColors.textSecondary} font-light leading-relaxed text-sm text-justify`}>
                         <p className="mb-6">
                             VAULT Corporation is a global mega-corporation in the information security sector, known for its advanced bio-metric research and surveillance technologies. Founded with the goal of advancing the security of life itself, VAULT's history is intertwined with the pursuit of absolute truth in the digital age.
                         </p>
@@ -271,40 +234,40 @@ export function AboutPage() {
                 
                 <div className="relative">
                      {/* System Status Panel */}
-                    <div className="border border-zinc-800 bg-black p-6 shadow-2xl">
-                        <div className="flex items-center justify-between mb-6 border-b border-zinc-800 pb-4">
-                            <h3 className="text-red-600 uppercase tracking-widest text-xs font-bold flex items-center gap-2">
+                    <div className={`border ${themeColors.cardBorder} ${isPublic ? 'bg-white shadow-xl' : 'bg-black shadow-2xl'} p-6`}>
+                        <div className={`flex items-center justify-between mb-6 border-b ${themeColors.cardBorder} pb-4`}>
+                            <h3 className={`${themeColors.accent} uppercase tracking-widest text-xs font-bold flex items-center gap-2`}>
                                 <Binary className="w-4 h-4" />
                                 System Diagnostics
                             </h3>
                             <div className="flex gap-1">
-                                <div className="w-2 h-2 bg-red-600 rounded-full animate-pulse"></div>
-                                <div className="w-2 h-2 bg-red-600 rounded-full animate-pulse delay-75"></div>
-                                <div className="w-2 h-2 bg-red-600 rounded-full animate-pulse delay-150"></div>
+                                <div className={`w-2 h-2 ${isPublic ? 'bg-blue-600' : 'bg-red-600'} rounded-full animate-pulse`}></div>
+                                <div className={`w-2 h-2 ${isPublic ? 'bg-blue-600' : 'bg-red-600'} rounded-full animate-pulse delay-75`}></div>
+                                <div className={`w-2 h-2 ${isPublic ? 'bg-blue-600' : 'bg-red-600'} rounded-full animate-pulse delay-150`}></div>
                             </div>
                         </div>
                         
                         <div className="space-y-4 font-mono text-xs">
                             <div className="flex justify-between items-center group">
-                                <span className="text-gray-500 group-hover:text-white transition-colors">Global Surveillance</span>
+                                <span className={`${themeColors.textSecondary} group-hover:${themeColors.textPrimary} transition-colors`}>Global Surveillance</span>
                                 <span className="text-green-500 bg-green-900/20 px-2 py-0.5 rounded border border-green-900/30">ONLINE</span>
                             </div>
                             <div className="flex justify-between items-center group">
-                                <span className="text-gray-500 group-hover:text-white transition-colors">Neural Network</span>
+                                <span className={`${themeColors.textSecondary} group-hover:${themeColors.textPrimary} transition-colors`}>Neural Network</span>
                                 <span className="text-green-500 bg-green-900/20 px-2 py-0.5 rounded border border-green-900/30">ACTIVE</span>
                             </div>
                             <div className="flex justify-between items-center group">
-                                <span className="text-gray-500 group-hover:text-white transition-colors">Bio-Metric Database</span>
+                                <span className={`${themeColors.textSecondary} group-hover:${themeColors.textPrimary} transition-colors`}>Bio-Metric Database</span>
                                 <span className="text-green-500 bg-green-900/20 px-2 py-0.5 rounded border border-green-900/30">SECURE</span>
                             </div>
                             
-                            <div className="mt-6 pt-6 border-t border-zinc-800">
-                                <div className="flex justify-between text-gray-500 mb-2">
+                            <div className={`mt-6 pt-6 border-t ${themeColors.cardBorder}`}>
+                                <div className={`flex justify-between ${themeColors.textSecondary} mb-2`}>
                                     <span>Processing Load</span>
                                     <span>84%</span>
                                 </div>
-                                <div className="w-full bg-zinc-900 h-1 overflow-hidden">
-                                    <div className="bg-red-600 h-full w-[84%] animate-[loading_3s_ease-in-out_infinite]"></div>
+                                <div className={`w-full ${isPublic ? 'bg-slate-100' : 'bg-zinc-900'} h-1 overflow-hidden`}>
+                                    <div className={`${isPublic ? 'bg-blue-600' : 'bg-red-600'} h-full w-[84%] animate-[loading_3s_ease-in-out_infinite]`}></div>
                                 </div>
                             </div>
                         </div>
@@ -312,78 +275,6 @@ export function AboutPage() {
                 </div>
             </div>
         </div>
-      </section>
-
-      {/* Strategic Vision Roadmap */}
-      <section className="border-t border-zinc-900 py-24 relative z-10 bg-gradient-to-b from-zinc-950 to-black">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="text-center mb-20">
-                 <h2 className="text-3xl text-white uppercase tracking-widest font-light mb-4"> 
-                    Strategic Vision
-                 </h2>
-                 <div className="inline-block bg-red-950/30 border border-red-900/50 px-6 py-2 rounded-full">
-                     <span className="text-red-500 font-mono text-sm tracking-widest">PROJECT: AURA</span>
-                 </div>
-              </div>
-              
-              <div className="relative">
-                  {/* Center Line */}
-                  <div className="absolute left-4 md:left-1/2 transform md:-translate-x-1/2 h-full w-px bg-gradient-to-b from-red-900/20 via-red-600 to-red-900/20"></div>
-                  
-                  {/* Timeline Items */}
-                  <div className="space-y-24">
-                      {/* Item 1 - Left */}
-                      <div className="flex flex-col md:flex-row items-center md:items-start justify-between relative group">
-                          <div className="md:w-5/12 text-left md:text-right md:pr-12 pl-12 md:pl-0 mb-4 md:mb-0 w-full hover:scale-105 transition-transform duration-300">
-                              <h3 className="text-red-600 text-xl uppercase tracking-widest mb-2 font-bold flex items-center justify-end gap-2">
-                                Phase 1: Inception
-                                <FileKey className="w-5 h-5" />
-                              </h3>
-                              <p className="text-gray-500 text-sm leading-relaxed mb-4">Establishment of core detection algorithms and global database infrastructure.</p>
-                              <span className="text-[10px] text-zinc-500 font-mono mt-3 inline-block border border-zinc-800 px-3 py-1 rounded bg-zinc-900">STATUS: COMPLETED</span>
-                          </div>
-                          
-                          <div className="absolute left-4 md:left-1/2 transform -translate-x-1/2 w-8 h-8 bg-black rounded-full border-4 border-red-900 z-10 mt-1 flex items-center justify-center">
-                              <div className="w-2 h-2 bg-red-600 rounded-full"></div>
-                          </div>
-                          
-                          <div className="md:w-5/12 md:pl-12"></div>
-                      </div>
-
-                      {/* Item 2 - Right */}
-                      <div className="flex flex-col md:flex-row items-center md:items-start justify-between relative group">
-                          <div className="md:w-5/12 md:text-right md:pr-12 hidden md:block"></div>
-                          
-                          <div className="absolute left-4 md:left-1/2 transform -translate-x-1/2 w-8 h-8 bg-red-600 rounded-full border-4 border-black z-10 mt-1 shadow-[0_0_20px_rgba(220,38,38,0.8)] animate-pulse"></div>
-                          
-                          <div className="md:w-5/12 text-left md:pl-12 pl-12 w-full hover:scale-105 transition-transform duration-300">
-                              <h3 className="text-white text-xl uppercase tracking-widest mb-2 font-bold flex items-center gap-2">
-                                <Scan className="w-5 h-5 text-red-600" />
-                                Phase 2: Global Scan
-                              </h3>
-                              <p className="text-gray-500 text-sm leading-relaxed mb-4">Advanced AI-generated image pattern recognition and pixel-level fabrication detection for all uploaded media.</p>
-                              <span className="text-[10px] text-green-500 font-mono mt-3 inline-block border border-green-900/30 bg-green-900/10 px-3 py-1 rounded animate-pulse">STATUS: ACTIVE</span>
-                          </div>
-                      </div>
-                      
-                      {/* Item 3 - Left */}
-                      <div className="flex flex-col md:flex-row items-center md:items-start justify-between relative group opacity-50 hover:opacity-100 transition-opacity duration-500">
-                          <div className="md:w-5/12 text-left md:text-right md:pr-12 pl-12 md:pl-0 mb-4 md:mb-0 w-full">
-                              <h3 className="text-gray-400 text-xl uppercase tracking-widest mb-2 font-bold flex items-center justify-end gap-2">
-                                Phase 3: Integration
-                                <Dna className="w-5 h-5" />
-                              </h3>
-                              <p className="text-gray-600 text-sm leading-relaxed mb-4">Direct neural link verification for visual cortex authentication.</p>
-                              <span className="text-[10px] text-zinc-600 font-mono mt-3 inline-block border border-zinc-800 px-3 py-1 rounded">STATUS: PENDING</span>
-                          </div>
-                          
-                          <div className="absolute left-4 md:left-1/2 transform -translate-x-1/2 w-8 h-8 bg-zinc-900 rounded-full border-4 border-zinc-800 z-10 mt-1"></div>
-                          
-                          <div className="md:w-5/12 md:pl-12"></div>
-                      </div>
-                  </div>
-              </div>
-          </div>
       </section>
     </div>
   );
