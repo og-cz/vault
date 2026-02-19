@@ -1,6 +1,5 @@
 <img src="README_IMG.jpg" alt="README_IMG.jpg">
 
-
 <!-- # VAULT
 
 Complete AI Receipt Detection system with:
